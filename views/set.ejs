@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h3><%= set.name %></h3>
+
+  <!-- Dropdown Button -->
+  <div class="dropdown mb-3">
+    <button
+      class="btn btn-primary dropdown-toggle"
+      type="button"
+      id="dropdownMenuButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Add Word to Set
+    </button>
+    <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton">
+      <% wordsInDb.forEach((word) => { %>
+      <form
+        action="/add-word-to-set/<%= word.id %>/<%= set.id %>"
+        method="POST"
+        class="mb-2"
+      >
+        <button type="submit" class="dropdown-item">
+          Add "<%= word.hanzi %>" to this set
+        </button>
+      </form>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="list-group">
+    <% if (words && words.length > 0) { %> <% words.forEach((word) => { %>
+    <div class="row align-items-start mb-2">
+      <div class="col-12 col-md-8">
+        <a
+          href="/word/<%= word.word_id %>"
+          class="list-group-item list-group-item-action w-100"
+        >
+          <%= word.hanzi %>
+        </a>
+      </div>
+      <div class="col-6 col-md-2 mt-2 mt-md-0">
+        <form
+          action="/delete-word-from-set/<%= word.word_id %>/<%= set.id %>"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-danger w-100">Delete</button>
+        </form>
+      </div>
+    </div>
+    <% }); %> <% } else { %>
+    <p>No words in set.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

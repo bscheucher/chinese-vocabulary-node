@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<div class="container col-xl-10 col-xxl-8 px-4 py-5">
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-lg-7 text-center text-lg-start">
+      <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">
+        Chinese Vocabulary Trainer
+      </h1>
+      <p class="col-lg-10 fs-4">
+        Enhance your Mandarin Chinese vocabulary with this app! Use existing
+        vocabulary sets, create new ones, and add new words. Enjoy learning!
+      </p>
+    </div>
+    <div class="col-md-10 mx-auto col-lg-5">
+      <form action="/login" method="POST" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="Your User Name"
+          />
+          <label for="floatingInput">User Name</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Password"
+          />
+          <label for="floatingPassword">Password</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">
+          Sign in
+        </button>
+
+        <p style="margin-bottom: 0">
+          <em>No account yet? Just click here!</em>
+        </p>
+        <a
+          class="w-100 btn btn-lg btn-outline-secondary"
+          role="button"
+          href="/register"
+          >Register</a
+        >
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

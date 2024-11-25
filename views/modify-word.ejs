@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <div
+    class="container frm-bg p-4 shadow rounded"
+    style="max-width: 500px; background-color: #f9f9f9"
+  >
+    <h3 class="text-center mb-4"><%= title %></h3>
+    <form action="add-word" method="POST" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label for="hanzi" class="form-label">Chinese Characters (hanzi)</label>
+        <input
+          type="text"
+          class="form-control"
+          id="hanzi"
+          name="hanzi"
+          placeholder=" 汉字"
+          required
+        />
+        <div class="invalid-feedback">Please enter the hanzi of the word.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="pinyin" class="form-label">Transcription (pinyin)</label>
+        <input
+          type="text"
+          class="form-control"
+          id="prinyin"
+          name="pinyin"
+          placeholder="Pinyin"
+          required
+        />
+        <div class="invalid-feedback">Please enter the transcription.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="translation" class="form-label">Translation</label>
+        <input
+          type="text"
+          class="form-control"
+          id="translation"
+          name="translation"
+          placeholder="Translation"
+          required
+        />
+        <div class="invalid-feedback">Please enter the translation</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="wordClassId" class="form-label">Word Class</label>
+        <input
+          type="text"
+          class="form-control"
+          id="wordClassId"
+          name="wordClassId"
+          placeholder="Word Class"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="comment" class="form-label">Comment</label>
+        <input
+          type="text"
+          class="form-control"
+          id="comment"
+          name="comment"
+          placeholder="Any comment"
+        />
+      </div>
+      <button class="btn btn-primary w-100 btn-lg" type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

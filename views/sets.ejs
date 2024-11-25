@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h3 class="mb-3 text-center">Vocabulary Sets</h3>
+  <div class="list-group">
+    <% if (locals.sets) { %> <% for (let set of sets) { %>
+    <div class="row align-items-start mb-2">
+      <div class="col-12 col-md-8">
+        <a
+          href="/set/<%= set.id %>"
+          class="list-group-item list-group-item-action"
+        >
+          <%= set.name %>
+        </a>
+      </div>
+      <div class="col-6 col-md-2 mt-2 mt-md-0">
+        <button type="button" class="btn btn-outline-secondary w-100">
+          Update
+        </button>
+      </div>
+      <div class="col-6 col-md-2 mt-2 mt-md-0">
+        <button type="button" class="btn btn-danger w-100">Delete</button>
+      </div>
+    </div>
+    <% } %> <% } else { %>
+    <p>No vocabulary sets available.</p>
+    <% } %>
+    <a role="button" class="btn btn-primary" href="/add-set">Add New Set</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

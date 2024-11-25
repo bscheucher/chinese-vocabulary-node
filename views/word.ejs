@@ -1,0 +1,59 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <div class="px-4 py-5 my-5">
+    <div class="col-lg-6 mx-auto">
+      <% if(locals.word){ %>
+
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <ul class="list-group text-start">
+          <h1 class="display-5 fw-bold text-body-emphasis">
+            <%= word.hanzi %>
+          </h1>
+          <li class="list-group-item"><%= word.pinyin %></li>
+          <li class="list-group-item"><%= word.translation %></li>
+          <li class="list-group-item">Created By Id: <%= word.created_id %></li>
+          <li class="list-group-item">
+            Last Modified By Id: <%= word.last_modified_id %>
+          </li>
+
+          <% if(word.word_class_id) { %>
+          <li class="list-group-item">
+            Word Class Id: <%= word.word_class_id %>
+          </li>
+          <% } %> <% if(word.comment) { %>
+          <li class="list-group-item"><%= word.comment %></li>
+          <% } %>
+          <button type="button" class="btn btn-outline-primary mt-1">
+            Update Word
+          </button>
+          <!-- Dropdown Button -->
+          <div class="dropdown mt-1">
+            <button
+              class="btn btn-primary dropdown-toggle w-100"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Add Word to Set
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <% setsInDb.forEach((set) => { %>
+              <li>
+                <a class="dropdown-item" href="#"> <%= set.name %> </a>
+              </li>
+              <% }); %>
+            </ul>
+          </div>
+        </ul>
+
+        <% } else { %>
+        <p>Word not found.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

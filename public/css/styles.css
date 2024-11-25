@@ -1,0 +1,28 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+button {
+  margin-bottom: 1rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Lora", serif;
+}
+
+#register-container {
+  max-width: 30%;
+  border-radius: 15px;
+}
+
+#register-wrap {
+  padding-top: 1rem;
+  padding-inline: 2rem;
+  padding-bottom: 5rem;
+}
+
+.form-floating {
+  margin-bottom: 1px;
+}
