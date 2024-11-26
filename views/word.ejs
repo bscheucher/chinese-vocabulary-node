@@ -24,28 +24,18 @@
           <% } %> <% if(word.comment) { %>
           <li class="list-group-item"><%= word.comment %></li>
           <% } %>
-          <button type="button" class="btn btn-outline-primary mt-1">
-            Update Word
-          </button>
-          <!-- Dropdown Button -->
-          <div class="dropdown mt-1">
-            <button
-              class="btn btn-primary dropdown-toggle w-100"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Add Word to Set
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <% setsInDb.forEach((set) => { %>
-              <li>
-                <a class="dropdown-item" href="#"> <%= set.name %> </a>
-              </li>
-              <% }); %>
-            </ul>
-          </div>
+
+          <a
+            role="button"
+            class="btn btn-outline-secondary w-100"
+            href="/update-word/<%= word.id %>"
+          >
+            Update
+          </a>
+
+          <a role="button" class="btn btn-info" href="/words"
+            >Back to All Words</a
+          >
         </ul>
 
         <% } else { %>

@@ -1,9 +1,31 @@
 <%- include('partials/header') %>
 
-<div class="container">
-  <h3 class="mb-3 text-center">Words in Database</h3>
+<div class="container py-5">
+  <h3 class="mb-3 text-center">Search Words in Database</h3>
+  <form action="search-words" method="POST">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="form-group mb-3">
+          <label for="wordQuery" class="form-label"
+            >Enter Hanzi, Pinyin or Translation</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="wordQuery"
+            name="wordQuery"
+            placeholder="Your search"
+            required
+          />
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary px-4">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
   <div class="list-group">
-    <% if (locals.words) { %> <% for (let word of words) { %>
+    <% if (words && words.length > 0) { %> <% for (let word of words) { %>
     <div class="row align-items-start mb-2">
       <div class="col-12 col-md-8">
         <a
@@ -30,9 +52,8 @@
       </div>
     </div>
     <% } %> <% } else { %>
-    <p>No words available.</p>
+    <p class="text-center text-muted">No words (yet) found.</p>
     <% } %>
-    <a role="button" class="btn btn-primary" href="/add-word">Add new word</a>
   </div>
 </div>
 

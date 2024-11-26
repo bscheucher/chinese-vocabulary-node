@@ -10,16 +10,21 @@
           href="/set/<%= set.id %>"
           class="list-group-item list-group-item-action"
         >
-          <%= set.name %>
+          <%= set.name %> <% if (set.comment) { %> (<%= set.comment %>) <% } %>
         </a>
       </div>
       <div class="col-6 col-md-2 mt-2 mt-md-0">
-        <button type="button" class="btn btn-outline-secondary w-100">
-          Update
-        </button>
+        <a
+          role="button"
+          href="/update-set/<%= set.id %>"
+          class="btn btn-outline-secondary w-100"
+          >Update</a
+        >
       </div>
       <div class="col-6 col-md-2 mt-2 mt-md-0">
-        <button type="button" class="btn btn-danger w-100">Delete</button>
+        <form action="/delete-set/<%= set.id %>" method="POST">
+          <button type="submit" class="btn btn-danger w-100">Delete</button>
+        </form>
       </div>
     </div>
     <% } %> <% } else { %>

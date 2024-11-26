@@ -7,6 +7,7 @@ import { Strategy } from "passport-local";
 import session from "express-session";
 import GoogleStrategy from "passport-google-oauth2";
 import env from "dotenv";
+import nodemailer from "nodemailer";
 
 const app = express();
 const port = 3000;
@@ -48,7 +49,7 @@ function ensureAuthenticated(req, res, next) {
 
 async function getWordClasses() {
   try {
-    const { rows } = await db.query("SELECT * FROM users");
+    const { rows } = await db.query("SELECT * FROM word_classes");
     return rows.length ? rows : console.log("No word classes found");
   } catch (err) {
     console.error("Error in getWordClasses:", err);
@@ -150,6 +151,26 @@ async function addWord(
     console.error(`Error in addWord: ${err.message}`);
   }
 }
+
+async function updateWord(
+  id,
+  hanzi,
+  pinyin,
+  translation,
+  last_modified_id,
+  word_class_id,
+  comment
+) {
+  try {
+    await db.query(
+      "UPDATE words SET hanzi=$1, pinyin=$2, translation=$3, last_modified_id=$4, word_class_id=$5, comment=$6 WHERE id=$7",
+      [hanzi, pinyin, translation, last_modified_id, word_class_id, comment, id]
+    );
+  } catch (err) {
+    console.error(`Error in updateWord: ${err}`);
+  }
+}
+
 async function addSet(name, comment) {
   try {
     await db.query(
@@ -159,6 +180,27 @@ async function addSet(name, comment) {
     );
   } catch (err) {
     console.error(`Error in addSet: ${err.message}`);
+  }
+}
+
+async function updateSet(id, name, comment) {
+  try {
+    await db.query("UPDATE sets SET name= $1, comment = $2 WHERE id=$3", [
+      name,
+      comment,
+      id,
+    ]);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function deleteSet(id) {
+  try {
+    await db.query("DELETE FROM words_sets WHERE set_id = $1", [id]);
+    await db.query("DELETE FROM sets WHERE id= $1", [id]);
+  } catch (err) {
+    console.error("Error deleting set", err);
   }
 }
 
@@ -211,22 +253,55 @@ async function deleteWordFromDB(wordId) {
   }
 }
 
-// ENDPOINTS: GET routes
+async function searchInWords(query) {
+  try {
+    // Validating input to avoid unnecessary database calls
+    if (!query || query.trim() === "") {
+      return []; // Returning an empty array if the query is invalid or empty
+    }
+
+    // Adding wildcards directly to the parameter for safe SQL injection handling
+    const searchPattern = `%${query}%`;
+
+    // Querying all relevant columns: hanzi, pinyin, and translation
+    const sql = `
+      SELECT * 
+      FROM words 
+      WHERE hanzi LIKE $1 OR pinyin LIKE $1 OR translation LIKE $1
+    `;
+    const result = await db.query(sql, [searchPattern]);
+
+    return result.rows;
+  } catch (err) {
+    console.error(`Error searching for query "${query}":`, err);
+    throw err; // Ensuring the calling function knows about the failure
+  }
+}
+
+// ENDPOINTS: CRUD routes
 
 app.get("/", (req, res) => {
   res.render("start.ejs");
 });
 
-app.get("/home", ensureAuthenticated, (req, res) => {
-  res.render("home.ejs");
+app.get("/about", (req, res) => {
+  res.render("about.ejs");
 });
 
 app.get("/register", (req, res) => {
   res.render("register.ejs");
 });
 
-app.get("/add-word", ensureAuthenticated, (req, res) => {
-  res.render("modify-word.ejs", { title: "Add New Word" });
+app.get("/home", ensureAuthenticated, (req, res) => {
+  res.render("home.ejs");
+});
+
+app.get("/add-word", ensureAuthenticated, async (req, res) => {
+  const wordClasses = await getWordClasses();
+  res.render("modify-word.ejs", {
+    title: "Add New Word",
+    word_classes: wordClasses,
+  });
 });
 
 app.post("/add-word", ensureAuthenticated, async (req, res) => {
@@ -247,6 +322,56 @@ app.post("/add-word", ensureAuthenticated, async (req, res) => {
   } catch (err) {
     console.error("Error adding word:", err);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/update-word/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const word = await getWord(id);
+    const word_classes = await getWordClasses();
+
+    res.render("modify-word.ejs", {
+      title: "Update Word",
+      word,
+      word_classes,
+    });
+  } catch (err) {
+    console.error("Error getting update-word:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/update-word/:id", ensureAuthenticated, async (req, res) => {
+  const { hanzi, pinyin, translation, wordClassId, comment } = req.body;
+  const id = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    await updateWord(
+      id,
+      hanzi,
+      pinyin,
+      translation,
+      userId,
+      wordClassId,
+      comment
+    );
+    res.redirect("/words");
+  } catch (err) {
+    console.error("Error updating word:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/delete-word/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    const id = req.params.id;
+    // console.log(typeof parseInt(id));
+    await deleteWordFromDB(id);
+    res.redirect("/words");
+  } catch (err) {
+    console.log("Error deleting word", err);
   }
 });
 
@@ -319,6 +444,34 @@ app.post("/add-set", ensureAuthenticated, async (req, res) => {
   }
 });
 
+app.get("/update-set/:id", ensureAuthenticated, async (req, res) => {
+  const id = req.params.id;
+  const set = await getSet(id);
+  res.render("modify-set.ejs", {
+    title: "Update Title and Comment of Set",
+    set,
+  });
+});
+
+app.post("/update-set/:id", ensureAuthenticated, async (req, res) => {
+  const { name, comment } = req.body;
+  const id = req.params.id;
+
+  try {
+    await updateSet(id, name, comment);
+    res.redirect("/sets");
+  } catch (err) {
+    console.error("Error updating set:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/delete-set/:id", async (req, res) => {
+  const id = req.params.id;
+  await deleteSet(id);
+  res.redirect("/sets");
+});
+
 app.post("/add-word-to-set/:wordId/:setId", async (req, res) => {
   const { wordId, setId } = req.params;
 
@@ -343,6 +496,54 @@ app.post("/delete-word-from-set/:wordId/:setId", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Failed to delete word from set" });
   }
+});
+
+// ENDPOINTS: ROUTES FOR THE CONTACT FORM
+
+app.get("/contact", (req, res) => {
+  res.render("contact.ejs");
+});
+
+app.post("/contact", async (req, res) => {
+  const { email, subject, message } = req.body;
+
+  try {
+    // Configure the email transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PW,
+      },
+    });
+
+    // Define the email options
+    const mailOptions = {
+      from: email,
+      to: "bernhard.scheucher@gmail.com",
+      subject: `Message from ${email}: ${subject}`,
+      text: message,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.render("success.ejs", { email, subject });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send("Something went wrong. Please try again later.");
+  }
+});
+
+// ENPOINTS: ROUTES FOR THE SEARCH FUNCTION
+app.get("/search-words", ensureAuthenticated, (req, res) => {
+  const words = [];
+  res.render("search-words.ejs", { words });
+});
+
+app.post("/search-words", ensureAuthenticated, async (req, res) => {
+  const query = req.body.wordQuery;
+  const words = await searchInWords(query);
+  res.render("search-words.ejs", { words });
 });
 
 // ENDPOINTS: LOGIN AND REGISTER ROUTES
