@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+
+<div class="container d-flex flex-column align-items-center min-vh-100 py-5">
+  <div id="practice-container">
+    <h3 class="text-center mb-4">Practice Translation</h3>
+    <hr />
+
+    <form id="practice-form">
+      <input type="hidden" id="current-translation" />
+      <h3 class="text-center mb-4">Hanzi: <span id="hanzi"></span></h3>
+      <h3 class="text-center mb-4">Pinyin: <span id="pinyin"></span></h3>
+      <hr />
+      <div class="form-group mb-3">
+        <p>Select the correct translation:</p>
+        <div id="options-container"></div>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary px-4">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const words = JSON.parse('<%- JSON.stringify(words || []).replace(/'/g, "\\'") %>');
+  const guessedWords = [];
+
+  function pickRandomWord() {
+    const remainingWords = words.filter(word => !guessedWords.includes(word.translation));
+
+    if (remainingWords.length === 0) {
+      document.getElementById("practice-container").innerHTML = `
+        <div class="text-center">
+          <h3>Congratulations! You've guessed all the words.</h3>
+          <a href="/practice-translation/<%= setId %>" class="btn btn-success">Play Again</a>
+          <a href="/sets" class="btn btn-primary">Back to Sets</a>
+        </div>`;
+      return;
+    }
+
+    const randomWord = remainingWords[Math.floor(Math.random() * remainingWords.length)];
+
+    // Pick two random distractors
+    const distractors = words
+      .filter(word => word.translation !== randomWord.translation)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
+
+    const options = [
+      { text: randomWord.translation, isCorrect: true },
+      ...distractors.map(d => ({ text: d.translation, isCorrect: false }))
+    ];
+
+    // Shuffle options
+    options.sort(() => 0.5 - Math.random());
+
+    // Populate the form
+    document.getElementById("hanzi").innerText = randomWord.hanzi;
+    document.getElementById("pinyin").innerText = randomWord.pinyin;
+    document.getElementById("current-translation").value = randomWord.translation;
+
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = options
+      .map(
+        (option, index) => `
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="selectedTranslation"
+            id="option${index}"
+            value="${option.text}"
+          />
+          <label class="form-check-label" for="option${index}">
+            ${option.text}
+          </label>
+        </div>`
+      )
+      .join("");
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const selectedTranslation = document.querySelector(
+      'input[name="selectedTranslation"]:checked'
+    )?.value;
+
+    const correctTranslation = document.getElementById("current-translation").value;
+
+    if (!selectedTranslation) {
+      alert("Please select an option.");
+      return;
+    }
+
+    if (selectedTranslation === correctTranslation) {
+      guessedWords.push(correctTranslation);
+      alert("Correct! Keep going.");
+    } else {
+      alert("Incorrect. Try again.");
+    }
+
+    pickRandomWord();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .getElementById("practice-form")
+      .addEventListener("submit", handleSubmit);
+
+    pickRandomWord();
+  });
+</script>

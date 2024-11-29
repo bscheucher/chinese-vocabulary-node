@@ -1,0 +1,82 @@
+<%- include('partials/header') %>
+
+<div class="container py-5">
+  <div id="practice-container">
+    <h3 class="text-center mb-4">Practice Hanzi</h3>
+
+    <form id="practice-form">
+      <input type="hidden" id="current-hanzi" />
+      <h3 class="text-center mb-4">Pinyin: <span id="pinyin"></span></h3>
+      <h3 class="text-center mb-4">
+        Translation: <span id="translation"></span>
+      </h3>
+
+      <div class="form-group mb-3">
+        <label for="enteredHanzi" class="form-label"
+          >Enter correct Hanzi:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="enteredHanzi"
+          placeholder="汉字"
+          required
+          pattern="[\u4e00-\u9fa5]+"
+          title="Please enter valid Hanzi characters."
+        />
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary px-4">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const words = JSON.parse('<%- JSON.stringify(words || []).replace(/'/g, "\\'") %>');
+  console.log(words);
+  const guessedWords = [];
+
+  function pickRandomWord() {
+    const remainingWords = words.filter(
+      (word) => !guessedWords.includes(word.hanzi)
+    );
+    if (remainingWords.length === 0) {
+      document.getElementById("practice-container").innerHTML = `
+        <div class="text-center">
+          <h3>Congratulations! You've guessed all the words.</h3>
+          <a href="/practice-hanzi/<%= setId %>" class="btn btn-success">Play Again</a>
+          <a href="/sets" class="btn btn-primary">Back to Sets</a>
+        </div>`;
+      return;
+    }
+    const randomWord =
+      remainingWords[Math.floor(Math.random() * remainingWords.length)];
+    document.getElementById("pinyin").innerText = randomWord.pinyin;
+    document.getElementById("translation").innerText = randomWord.translation;
+    document.getElementById("current-hanzi").value = randomWord.hanzi;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const enteredHanzi = document.getElementById("enteredHanzi").value;
+    const correctHanzi = document.getElementById("current-hanzi").value;
+
+    if (enteredHanzi === correctHanzi) {
+      guessedWords.push(correctHanzi);
+      alert("Correct! Keep going.");
+    } else {
+      alert("Incorrect. Try again.");
+    }
+    document.getElementById("enteredHanzi").value = "";
+    pickRandomWord();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .getElementById("practice-form")
+      .addEventListener("submit", handleSubmit);
+    pickRandomWord();
+  });
+</script>

@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<div class="container py-5">
+  <div id="practice-container">
+    <h3 class="text-center mb-4">Practice Pinyin</h3>
+
+    <form id="practice-form">
+      <input type="hidden" id="current-pinyin" />
+      <h3 class="text-center mb-4">Hanzi: <span id="hanzi"></span></h3>
+      <h3 class="text-center mb-4">
+        Translation: <span id="translation"></span>
+      </h3>
+
+      <div class="form-group mb-3">
+        <label for="enteredPinyin" class="form-label"
+          >Enter correct Pinyin:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="enteredPinyin"
+          placeholder="Pinyin"
+          required
+          title="Please enter Pinyin transkription."
+        />
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary px-4">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const words = JSON.parse('<%- JSON.stringify(words || []).replace(/'/g, "\\'") %>');
+
+  const guessedWords = [];
+
+  function pickRandomWord() {
+    const remainingWords = words.filter(
+      (word) => !guessedWords.includes(word.pinyin)
+    );
+    if (remainingWords.length === 0) {
+      document.getElementById("practice-container").innerHTML = `
+        <div class="text-center">
+          <h3>Congratulations! You've guessed all the words.</h3>
+          <a href="/practice-pinyin/<%= setId %>" class="btn btn-success">Play Again</a>
+          <a href="/sets" class="btn btn-primary">Back to Sets</a>
+        </div>`;
+      return;
+    }
+    const randomWord =
+      remainingWords[Math.floor(Math.random() * remainingWords.length)];
+    document.getElementById("hanzi").innerText = randomWord.hanzi;
+    document.getElementById("translation").innerText = randomWord.translation;
+    document.getElementById("current-pinyin").value = randomWord.pinyin;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const enteredPinyin = document.getElementById("enteredPinyin").value;
+    const correctPinyin = document.getElementById("current-pinyin").value;
+
+    if (enteredPinyin === correctPinyin) {
+      guessedWords.push(correctPinyin);
+      alert("Correct! Keep going.");
+    } else {
+      alert("Incorrect. Try again.");
+    }
+    document.getElementById("enteredPinyin").value = "";
+    pickRandomWord();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .getElementById("practice-form")
+      .addEventListener("submit", handleSubmit);
+    pickRandomWord();
+  });
+</script>

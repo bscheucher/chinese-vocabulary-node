@@ -8,6 +8,7 @@ import session from "express-session";
 import GoogleStrategy from "passport-google-oauth2";
 import env from "dotenv";
 import nodemailer from "nodemailer";
+import flash from "connect-flash";
 
 const app = express();
 const port = 3000;
@@ -21,6 +22,15 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use(flash());
+
+// Make flash messages available to views
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -545,6 +555,99 @@ app.post("/search-words", ensureAuthenticated, async (req, res) => {
   const words = await searchInWords(query);
   res.render("search-words.ejs", { words });
 });
+
+// ENDPOINTS: PRACTICE HANZI, PINYIN, TRANSLATION
+
+app.get("/practice-hanzi/:setId", ensureAuthenticated, async (req, res) => {
+  try {
+    const setId = req.params.setId;
+
+    const wordsQuery = `
+      SELECT w.id, w.hanzi, w.pinyin, w.translation 
+      FROM words w
+      JOIN words_sets ws ON w.id = ws.word_id
+      WHERE ws.set_id = $1;
+    `;
+    const { rows: words } = await db.query(wordsQuery, [setId]);
+
+    if (words.length === 0) {
+      req.flash("error", "No words available in this set.");
+      return res.redirect("/sets");
+    }
+
+    res.render("practice-hanzi.ejs", {
+      setId,
+      words,
+      success: req.flash("success"),
+      error: req.flash("error"),
+    });
+  } catch (error) {
+    console.error("Error loading words:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get("/practice-pinyin/:setId", ensureAuthenticated, async (req, res) => {
+  try {
+    const setId = req.params.setId;
+
+    const wordsQuery = `
+      SELECT w.id, w.hanzi, w.pinyin, w.translation 
+      FROM words w
+      JOIN words_sets ws ON w.id = ws.word_id
+      WHERE ws.set_id = $1;
+    `;
+    const { rows: words } = await db.query(wordsQuery, [setId]);
+
+    if (words.length === 0) {
+      req.flash("error", "No words available in this set.");
+      return res.redirect("/sets");
+    }
+
+    res.render("practice-pinyin.ejs", {
+      setId,
+      words,
+      success: req.flash("success"),
+      error: req.flash("error"),
+    });
+  } catch (error) {
+    console.error("Error loading words:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get(
+  "/practice-translation/:setId",
+  ensureAuthenticated,
+  async (req, res) => {
+    try {
+      const setId = req.params.setId;
+
+      const wordsQuery = `
+      SELECT w.id, w.hanzi, w.pinyin, w.translation 
+      FROM words w
+      JOIN words_sets ws ON w.id = ws.word_id
+      WHERE ws.set_id = $1;
+    `;
+      const { rows: words } = await db.query(wordsQuery, [setId]);
+
+      if (words.length === 0) {
+        req.flash("error", "No words available in this set.");
+        return res.redirect("/sets");
+      }
+
+      res.render("practice-translation.ejs", {
+        setId,
+        words,
+        success: req.flash("success"),
+        error: req.flash("error"),
+      });
+    } catch (error) {
+      console.error("Error loading words:", error);
+      res.status(500).send("Server Error");
+    }
+  }
+);
 
 // ENDPOINTS: LOGIN AND REGISTER ROUTES
 
