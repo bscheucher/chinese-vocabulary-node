@@ -11,7 +11,7 @@ import nodemailer from "nodemailer";
 import flash from "connect-flash";
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 const saltRounds = 10;
 env.config();
 
@@ -38,14 +38,27 @@ app.use(express.static("public"));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Decide on the connection string
+const connectionString =
+  process.env.INTERNAL_DATABASE_URL || // Use Internal URL on Render
+  process.env.DATABASE_URL || // Use External URL as a fallback
+  `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`; // Local fallback
+
+// Initialize the database client
 const db = new pg.Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
+  connectionString: connectionString,
+  ssl:
+    process.env.INTERNAL_DATABASE_URL || process.env.DATABASE_URL
+      ? { rejectUnauthorized: false }
+      : false, // Enable SSL only in production
 });
-db.connect();
+
+// Connect to the database
+db.connect()
+  .then(() => console.log("Database connected successfully!"))
+  .catch((err) => console.error("Database connection error:", err));
+
+export default db;
 
 // FUNCTION TO PROTECT ENDPOINTS BY ENSURING THAT USER IS LOGGED IN
 function ensureAuthenticated(req, res, next) {
@@ -749,6 +762,6 @@ passport.deserializeUser(async (id, cb) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
