@@ -5,6 +5,7 @@
   <div class="list-group">
     <% if (locals.words) { %> <% for (let word of words) { %>
     <div class="row align-items-start mb-2">
+      <!-- Word information -->
       <div class="col-12 col-md-8">
         <a
           href="/word/<%= word.id %>"
@@ -14,6 +15,8 @@
           word.translation %>"
         </a>
       </div>
+
+      <!-- Update button (stacked on small screens) -->
       <div class="col-6 col-md-2 mt-2 mt-md-0">
         <a
           role="button"
@@ -23,6 +26,8 @@
           Update
         </a>
       </div>
+
+      <!-- Delete button (stacked on small screens) -->
       <div class="col-6 col-md-2 mt-2 mt-md-0">
         <form action="/delete-word/<%= word.id %>" method="POST">
           <button type="submit" class="btn btn-danger w-100">Delete</button>
@@ -32,7 +37,11 @@
     <% } %> <% } else { %>
     <p>No words available.</p>
     <% } %>
-    <a role="button" class="btn btn-primary" href="/add-word">Add new word</a>
+
+    <!-- Add new word button -->
+    <a role="button" class="btn btn-primary w-100 w-md-auto" href="/add-word"
+      >Add new word</a
+    >
   </div>
 </div>
 

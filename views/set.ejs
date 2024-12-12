@@ -4,8 +4,10 @@
   <h3><%= set.name %></h3>
   <p><%= set.comment %></p>
 
-  <div class="practice-btn-wrap mb-5 d-flex justify-content-start gap-1">
-    <div class="col-4 col-md-2 mt-2 mt-md-0">
+  <div
+    class="practice-btn-wrap mb-5 d-flex flex-column flex-md-row justify-content-start gap-3"
+  >
+    <div class="col-12 col-md-2 mt-2">
       <a
         role="button"
         class="btn btn-secondary w-100"
@@ -13,7 +15,7 @@
         >Practice Hanzi</a
       >
     </div>
-    <div class="col-4 col-md-2 mt-2 mt-md-0">
+    <div class="col-12 col-md-2 mt-2">
       <a
         role="button"
         class="btn btn-secondary w-100"
@@ -21,7 +23,7 @@
         >Practice Pinyin</a
       >
     </div>
-    <div class="col-4 col-md-2 mt-2 mt-md-0">
+    <div class="col-12 col-md-2 mt-2">
       <a
         role="button"
         class="btn btn-secondary w-100"
@@ -60,7 +62,7 @@
   <div class="list-group">
     <% if (words && words.length > 0) { %> <% words.forEach((word) => { %>
     <div class="row align-items-start mb-2">
-      <div class="col-4 col-md-8">
+      <div class="col-12 col-md-8">
         <a
           href="/word/<%= word.word_id %>"
           class="list-group-item list-group-item-action w-100"
@@ -68,7 +70,7 @@
           <%= word.hanzi %>
         </a>
       </div>
-      <div class="col-4 col-md-2 mt-2 mt-md-0">
+      <div class="col-12 col-md-2 mt-2">
         <form
           action="/delete-word-from-set/<%= word.word_id %>/<%= set.id %>"
           method="POST"

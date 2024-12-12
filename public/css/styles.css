@@ -27,3 +27,25 @@ h3 {
   margin-bottom: 1px;
 }
 
+#practice-container {
+  max-width: 500px;
+}
+
+/* Adjust font sizes and spacing for smaller screens */
+@media (max-width: 576px) {
+  #practice-container {
+    padding: 10px;
+  }
+
+  #practice-container h3 {
+    font-size: 1.25rem; /* Smaller font for titles */
+  }
+
+  .form-label {
+    font-size: 1rem; /* Adjust label size */
+  }
+
+  .btn {
+    font-size: 0.9rem; /* Adjust button font size */
+  }
+}

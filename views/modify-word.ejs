@@ -1,9 +1,9 @@
 <%- include('partials/header') %>
 
-<div class="d-flex align-items-center justify-content-center vh-100">
+<div class="container d-flex align-items-center justify-content-center py-4">
   <div
-    class="container frm-bg p-4 shadow rounded"
-    style="max-width: 500px; background-color: #f9f9f9"
+    class="col-12 col-sm-10 col-md-8 col-lg-6 frm-bg p-4 shadow rounded"
+    style="background-color: #f9f9f9"
   >
     <h3 class="text-center mb-4"><%= title %></h3>
     <% if(locals.word){ %>
@@ -65,7 +65,6 @@
         <div class="invalid-feedback">Please select a word class.</div>
       </div>
       
-
       <div class="mb-3">
         <label for="comment" class="form-label">Comment</label>
         <input
@@ -134,7 +133,6 @@
         <div class="invalid-feedback">Please select a word class.</div>
       </div>
     
-
       <div class="mb-3">
         <label for="comment" class="form-label">Comment</label>
         <input

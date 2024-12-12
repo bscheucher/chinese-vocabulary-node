@@ -2,12 +2,12 @@
 
 <div class="container">
   <div class="px-4 py-5 my-5">
-    <div class="col-lg-6 mx-auto">
+    <div class="col-lg-6 col-12 mx-auto">
       <% if(locals.word){ %>
 
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
         <ul class="list-group text-start">
-          <h1 class="display-5 fw-bold text-body-emphasis">
+          <h1 class="display-5 fw-bold text-body-emphasis text-center">
             <%= word.hanzi %>
           </h1>
           <li class="list-group-item"><%= word.pinyin %></li>
@@ -27,15 +27,15 @@
 
           <a
             role="button"
-            class="btn btn-outline-secondary w-100"
+            class="btn btn-outline-secondary w-100 w-sm-auto"
             href="/update-word/<%= word.id %>"
           >
             Update
           </a>
 
-          <a role="button" class="btn btn-info" href="/words"
-            >Back to All Words</a
-          >
+          <a role="button" class="btn btn-info w-100 w-sm-auto" href="/words">
+            Back to All Words
+          </a>
         </ul>
 
         <% } else { %>

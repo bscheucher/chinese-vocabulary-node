@@ -1,87 +1,86 @@
 <%- include('partials/header.ejs') %>
 
-<div
-  class="container d-flex align-items-center py-15 bg-body-tertiary"
-  id="register-container"
->
-  <div class="form-signin w-100 m-auto" id="register-wrap">
-    <form action="/register" method="POST">
-      <img
-        class="mb-4"
-        src="assets/images/ornament.png"
-        alt=""
-        width="72"
-        height="57"
-      />
-      <h1 class="h3 mb-3 fw-normal">Register to Get Started!</h1>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <div class="form-signin bg-body-tertiary p-4 rounded">
+        <form action="/register" method="POST">
+          <img
+            class="mb-4 img-fluid d-block mx-auto"
+            src="assets/images/ornament.png"
+            alt="Ornament"
+            width="72"
+            height="57"
+          />
+          <h1 class="h3 mb-3 fw-normal text-center">
+            Register to Get Started!
+          </h1>
 
-      <div class="form-floating">
-        <input
-          type="text"
-          class="form-control"
-          id="floatingInput"
-          name="username"
-          placeholder="username"
-          required
-        />
-        <label for="floatingInput">Username</label>
-      </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingInput"
+              name="username"
+              placeholder="username"
+              required
+            />
+            <label for="floatingInput">Username</label>
+          </div>
 
-      <div class="form-floating">
-        <input
-          type="text"
-          class="form-control"
-          id="firstName"
-          name="firstName"
-          placeholder="Your First Name"
-        />
-        <label for="floatingInput">First Name</label>
-      </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              placeholder="Your First Name"
+            />
+            <label for="firstName">First Name</label>
+          </div>
 
-      <div class="form-floating">
-        <input
-          type="text"
-          class="form-control"
-          id="lastName"
-          name="lastName"
-          placeholder="Your Last Name"
-        />
-        <label for="floatingInput">Last Name</label>
-      </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              placeholder="Your Last Name"
+            />
+            <label for="lastName">Last Name</label>
+          </div>
 
-      <div class="form-floating">
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          placeholder="name@example.com"
-          required
-        />
-        <label for="floatingInput">Email address</label>
-      </div>
-      <div class="form-floating">
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          placeholder="Password"
-          required
-        />
-        <label for="floatingPassword">Password</label>
-      </div>
+          <div class="form-floating mb-3">
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="name@example.com"
+              required
+            />
+            <label for="email">Email address</label>
+          </div>
 
-      <button class="btn btn-primary w-100 py-2 mt-2" type="submit">
-        Submit
-      </button>
-    </form>
+          <div class="form-floating mb-3">
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <label for="password">Password</label>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 mt-2" type="submit">
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
-  <script
-    src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
-  ></script>
 </div>
 
 <%- include('partials/footer.ejs') %>

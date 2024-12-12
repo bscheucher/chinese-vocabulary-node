@@ -4,11 +4,11 @@
   <h3 class="mb-3 text-center">Search Words in Database</h3>
   <form action="search-words" method="POST">
     <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6">
         <div class="form-group mb-3">
-          <label for="wordQuery" class="form-label"
-            >Enter Hanzi, Pinyin or Translation</label
-          >
+          <label for="wordQuery" class="form-label">
+            Enter Hanzi, Pinyin, or Translation
+          </label>
           <input
             type="text"
             class="form-control"
@@ -24,10 +24,10 @@
       </div>
     </div>
   </form>
-  <div class="list-group">
+  <div class="list-group mt-4">
     <% if (words && words.length > 0) { %> <% for (let word of words) { %>
-    <div class="row align-items-start mb-2">
-      <div class="col-12 col-md-8">
+    <div class="row align-items-center mb-3">
+      <div class="col-12 col-sm-7">
         <a
           href="/word/<%= word.id %>"
           class="list-group-item list-group-item-action"
@@ -36,19 +36,21 @@
           word.translation %>"
         </a>
       </div>
-      <div class="col-6 col-md-2 mt-2 mt-md-0">
-        <a
-          role="button"
-          class="btn btn-outline-secondary w-100"
-          href="/update-word/<%= word.id %>"
-        >
-          Update
-        </a>
-      </div>
-      <div class="col-6 col-md-2 mt-2 mt-md-0">
-        <form action="/delete-word/<%= word.id %>" method="POST">
-          <button type="submit" class="btn btn-danger w-100">Delete</button>
-        </form>
+      <div class="btn-wrap row g-2 justify-content-center">
+        <div class="col-12 col-sm-6 col-md-3">
+          <a
+            role="button"
+            class="btn btn-outline-secondary w-100"
+            href="/update-word/<%= word.id %>"
+          >
+            Update
+          </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <form action="/delete-word/<%= word.id %>" method="POST">
+            <button type="submit" class="btn btn-danger w-100">Delete</button>
+          </form>
+        </div>
       </div>
     </div>
     <% } %> <% } else { %>

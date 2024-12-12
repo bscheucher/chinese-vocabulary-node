@@ -1,18 +1,23 @@
 <%- include('partials/header') %>
 
-<div class="container d-flex flex-column align-items-center min-vh-100 py-5">
-  <div id="practice-container">
+<div
+  class="container-fluid d-flex flex-column align-items-center min-vh-100 py-5"
+>
+  <div id="practice-container" class="w-100 px-3">
     <h3 class="text-center mb-4">Practice Translation</h3>
     <hr />
 
-    <form id="practice-form">
+    <form id="practice-form" class="w-100">
       <input type="hidden" id="current-translation" />
       <h3 class="text-center mb-4">Hanzi: <span id="hanzi"></span></h3>
       <h3 class="text-center mb-4">Pinyin: <span id="pinyin"></span></h3>
       <hr />
       <div class="form-group mb-3">
-        <p>Select the correct translation:</p>
-        <div id="options-container"></div>
+        <p class="text-center">Select the correct translation:</p>
+        <div
+          id="options-container"
+          class="d-flex flex-column align-items-center"
+        ></div>
       </div>
 
       <div class="text-center">
@@ -41,7 +46,6 @@
 
     const randomWord = remainingWords[Math.floor(Math.random() * remainingWords.length)];
 
-    // Pick two random distractors
     const distractors = words
       .filter(word => word.translation !== randomWord.translation)
       .sort(() => 0.5 - Math.random())
@@ -52,10 +56,8 @@
       ...distractors.map(d => ({ text: d.translation, isCorrect: false }))
     ];
 
-    // Shuffle options
     options.sort(() => 0.5 - Math.random());
 
-    // Populate the form
     document.getElementById("hanzi").innerText = randomWord.hanzi;
     document.getElementById("pinyin").innerText = randomWord.pinyin;
     document.getElementById("current-translation").value = randomWord.translation;
@@ -112,3 +114,5 @@
     pickRandomWord();
   });
 </script>
+
+<%- include('partials/footer') %>

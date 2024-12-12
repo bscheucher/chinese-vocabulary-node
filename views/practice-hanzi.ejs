@@ -1,14 +1,17 @@
 <%- include('partials/header') %>
 
 <div class="container py-5">
-  <div id="practice-container">
+  <div id="practice-container" class="mx-auto" style="max-width: 600px">
     <h3 class="text-center mb-4">Practice Hanzi</h3>
 
-    <form id="practice-form">
+    <form id="practice-form" class="needs-validation" novalidate>
       <input type="hidden" id="current-hanzi" />
-      <h3 class="text-center mb-4">Pinyin: <span id="pinyin"></span></h3>
+
       <h3 class="text-center mb-4">
-        Translation: <span id="translation"></span>
+        Pinyin: <span id="pinyin" class="text-primary"></span>
+      </h3>
+      <h3 class="text-center mb-4">
+        Translation: <span id="translation" class="text-secondary"></span>
       </h3>
 
       <div class="form-group mb-3">
@@ -24,6 +27,7 @@
           pattern="[\u4e00-\u9fa5]+"
           title="Please enter valid Hanzi characters."
         />
+        <div class="invalid-feedback">Please enter valid Hanzi characters.</div>
       </div>
 
       <div class="text-center">
@@ -46,8 +50,8 @@
       document.getElementById("practice-container").innerHTML = `
         <div class="text-center">
           <h3>Congratulations! You've guessed all the words.</h3>
-          <a href="/practice-hanzi/<%= setId %>" class="btn btn-success">Play Again</a>
-          <a href="/sets" class="btn btn-primary">Back to Sets</a>
+          <a href="/practice-hanzi/<%= setId %>" class="btn btn-success mt-3">Play Again</a>
+          <a href="/sets" class="btn btn-primary mt-3">Back to Sets</a>
         </div>`;
       return;
     }
@@ -80,3 +84,5 @@
     pickRandomWord();
   });
 </script>
+
+<%- include('partials/footer') %>
