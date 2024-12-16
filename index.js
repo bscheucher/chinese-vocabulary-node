@@ -390,8 +390,19 @@ app.post("/update-word/:id", ensureAuthenticated, async (req, res) => {
 app.post("/delete-word/:id", ensureAuthenticated, async (req, res) => {
   try {
     const id = req.params.id;
-    // console.log(typeof parseInt(id));
-    await deleteWordFromDB(id);
+    const word = await getWord(id);
+    const createdById = word.created_id;
+    const userId = req.user.id;
+    if (userId === createdById) {
+      await deleteWordFromDB(id);
+    } else {
+      console.log(
+        "You are not allowed to delete words that you did not create."
+      );
+      res
+        .status(405)
+        .send("You are not allowed to delete words that you did not create.");
+    }
     res.redirect("/words");
   } catch (err) {
     console.log("Error deleting word", err);
