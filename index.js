@@ -467,11 +467,12 @@ app.get("/set/:setId", ensureAuthenticated, async (req, res) => {
 app.post("/add-set", ensureAuthenticated, async (req, res) => {
   const name = req.body.name;
   const comment = req.body.comment;
+  const userId = req.user.id;
   try {
-    await db.query("INSERT INTO sets (name, comment) VALUES ($1, $2)", [
-      name,
-      comment,
-    ]);
+    await db.query(
+      "INSERT INTO sets (name, comment, created_id) VALUES ($1, $2, $3)",
+      [name, comment, userId]
+    );
     res.redirect("/sets");
   } catch (err) {
     res.send(err);
@@ -501,9 +502,32 @@ app.post("/update-set/:id", ensureAuthenticated, async (req, res) => {
 });
 
 app.post("/delete-set/:id", async (req, res) => {
-  const id = req.params.id;
-  await deleteSet(id);
-  res.redirect("/sets");
+  try {
+    const id = req.params.id;
+    const set = await getSet(id);
+
+    if (!set) {
+      return res.status(404).send("Set not found.");
+    }
+
+    const createdById = set.created_id;
+    const userId = req.user.id;
+
+    if (userId !== createdById) {
+      console.log(
+        "You are not allowed to delete a set that you have not created."
+      );
+      return res
+        .status(403)
+        .send("You are not allowed to delete a set that you have not created.");
+    }
+
+    await deleteSet(id);
+    res.redirect("/sets");
+  } catch (err) {
+    console.error("Error in deleteSet:", err);
+    res.status(500).send("An error occurred while trying to delete the set.");
+  }
 });
 
 app.post("/add-word-to-set/:wordId/:setId", async (req, res) => {
